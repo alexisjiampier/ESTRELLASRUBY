@@ -21,6 +21,8 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            margin: 0;
+            padding: 0;
         }
 
         /* Estrellas de fondo */
@@ -95,6 +97,18 @@
             border-radius: 20px;
             border: 2px solid #ff0040;
             box-shadow: 0 0 30px #ff0040;
+            max-width: 95%;
+            width: 100%;
+            max-height: 95vh;
+            overflow-y: auto;
+        }
+
+        @media (max-width: 768px) {
+            .game-container {
+                padding: 15px;
+                border-radius: 15px;
+                border-width: 1px;
+            }
         }
 
         h1 {
@@ -102,6 +116,13 @@
             margin-bottom: 20px;
             text-shadow: 0 0 10px #ff0040;
             font-size: 2.5em;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8em;
+                margin-bottom: 15px;
+            }
         }
 
         /* Pantalla de inicio */
@@ -137,6 +158,13 @@
             justify-content: center;
         }
 
+        @media (max-width: 480px) {
+            .game-board {
+                grid-template-columns: repeat(4, 60px);
+                gap: 8px;
+            }
+        }
+
         .card {
             width: 80px;
             height: 80px;
@@ -150,6 +178,14 @@
             font-size: 2em;
             transition: all 0.3s;
             position: relative;
+        }
+
+        @media (max-width: 480px) {
+            .card {
+                width: 60px;
+                height: 60px;
+                font-size: 1.5em;
+            }
         }
 
         .card:hover {
@@ -218,8 +254,11 @@
             display: none;
             text-align: center;
             max-width: 900px;
+            width: 95%;
             margin: 0 auto;
-            padding: 40px;
+            padding: 20px;
+            overflow-y: auto;
+            max-height: 85vh;
         }
 
         .final-text {
@@ -228,13 +267,39 @@
             text-shadow: 0 0 20px #ff0040;
             line-height: 2.2;
             text-align: center;
+            padding: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .final-message {
+                padding: 15px;
+                max-height: 80vh;
+            }
+            
+            .final-text {
+                font-size: 1.2em;
+                line-height: 1.8;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .final-text {
+                font-size: 1em;
+                line-height: 1.6;
+            }
         }
 
         .word {
             display: inline-block;
             opacity: 0;
             animation: fadeInWord 0.5s forwards;
-            margin: 0 8px;
+            margin: 0 4px;
+        }
+
+        @media (max-width: 480px) {
+            .word {
+                margin: 0 3px;
+            }
         }
 
         @keyframes fadeInWord {
@@ -316,6 +381,20 @@
             height: 400px;
             display: none;
             z-index: 5;
+        }
+
+        @media (max-width: 768px) {
+            .heart-formation {
+                width: 300px;
+                height: 300px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .heart-formation {
+                width: 200px;
+                height: 200px;
+            }
         }
 
         .heart-star {
@@ -623,12 +702,20 @@
             const heart = document.getElementById('heart-formation');
             heart.style.display = 'block';
             
+            // Ajustar escala según el tamaño de pantalla
+            const isMobile = window.innerWidth <= 480;
+            const isTablet = window.innerWidth <= 768;
+            const scale = isMobile ? 0.5 : isTablet ? 0.75 : 1;
+            
             // Coordenadas para formar un corazón
             const heartCoords = [];
             for (let angle = 0; angle < Math.PI * 2; angle += 0.1) {
                 const x = 16 * Math.pow(Math.sin(angle), 3);
                 const y = -(13 * Math.cos(angle) - 5 * Math.cos(2 * angle) - 2 * Math.cos(3 * angle) - Math.cos(4 * angle));
-                heartCoords.push({ x: x * 10 + 200, y: y * 10 + 150 });
+                heartCoords.push({ 
+                    x: (x * 10 + 200) * scale, 
+                    y: (y * 10 + 150) * scale 
+                });
             }
             
             heartCoords.forEach((coord, index) => {
