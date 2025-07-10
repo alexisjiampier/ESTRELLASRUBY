@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bajo las Estrellas - Un Juego Para Mi Reina</title>
+    <title>Te Amo Mi Ruby - Cielo Estrellado</title>
     <style>
         * {
             margin: 0;
@@ -12,725 +12,388 @@
         }
 
         body {
-            background: #000;
-            color: #fff;
-            font-family: 'Arial', sans-serif;
-            overflow: hidden;
-            position: relative;
+            background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
             height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 0;
-            padding: 0;
+            overflow: hidden;
+            cursor: pointer;
+            font-family: 'Arial', sans-serif;
         }
 
-        /* Estrellas de fondo */
+        #stars-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
         .star {
             position: absolute;
+            width: 4px;
+            height: 4px;
             background: white;
-            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+            box-shadow: 0 0 10px currentColor;
         }
 
         @keyframes twinkle {
-            0% { 
-                opacity: 0; 
-                transform: scale(0.5) rotate(0deg); 
+            0%, 100% { opacity: 0; transform: scale(0.5); }
+            50% { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes moveUp {
+            from {
+                transform: translateY(0) rotate(0deg);
             }
-            50% { 
-                opacity: 1; 
-                transform: scale(1) rotate(180deg); 
+            to {
+                transform: translateY(-100vh) rotate(360deg);
+            }
+        }
+
+        @keyframes moveDown {
+            from {
+                transform: translateY(0) rotate(0deg);
+            }
+            to {
+                transform: translateY(100vh) rotate(-360deg);
+            }
+        }
+
+        @keyframes moveLeft {
+            from {
+                transform: translateX(0) rotate(0deg);
+            }
+            to {
+                transform: translateX(-100vw) rotate(360deg);
+            }
+        }
+
+        @keyframes moveRight {
+            from {
+                transform: translateX(0) rotate(0deg);
+            }
+            to {
+                transform: translateX(100vw) rotate(-360deg);
+            }
+        }
+
+        .love-text {
+            position: absolute;
+            font-size: 3rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #ff006e, #ff4500, #ffb700, #00ff88, #00b4d8, #ff006e);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientMove 3s ease infinite, fadeOut 3s ease-out forwards;
+            pointer-events: none;
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
+            z-index: 100;
+        }
+
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes fadeOut {
+            0% { 
+                opacity: 0;
+                transform: scale(0.5) translateY(0);
+            }
+            20% { 
+                opacity: 1;
+                transform: scale(1) translateY(-20px);
             }
             100% { 
-                opacity: 0; 
-                transform: scale(0.5) rotate(360deg); 
+                opacity: 0;
+                transform: scale(1.5) translateY(-100px);
             }
         }
 
-        @keyframes moveStar {
-            0% { 
-                transform: translateY(-100px) translateX(0) rotate(0deg); 
-            }
-            25% {
-                transform: translateY(25vh) translateX(20px) rotate(90deg);
-            }
-            50% {
-                transform: translateY(50vh) translateX(-20px) rotate(180deg);
-            }
-            75% {
-                transform: translateY(75vh) translateX(20px) rotate(270deg);
-            }
-            100% { 
-                transform: translateY(calc(100vh + 100px)) translateX(0) rotate(360deg); 
-            }
+        .shooting-star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            animation: shoot 3s linear infinite;
         }
 
-        @keyframes floatStar {
-            0%, 100% {
-                transform: translateX(0) translateY(0) scale(1);
-            }
-            33% {
-                transform: translateX(30px) translateY(-30px) scale(1.2);
-            }
-            66% {
-                transform: translateX(-30px) translateY(20px) scale(0.8);
-            }
-        }
-
-        @keyframes pulseStar {
-            0%, 100% {
-                opacity: 0.3;
-                transform: scale(0.8);
-            }
-            50% {
-                opacity: 1;
-                transform: scale(1.2);
-            }
-        }
-
-        /* Contenedor principal */
-        .game-container {
-            text-align: center;
-            z-index: 10;
-            padding: 20px;
-            background: rgba(0, 0, 0, 0.8);
-            border-radius: 20px;
-            border: 2px solid #ff0040;
-            box-shadow: 0 0 30px #ff0040;
-            max-width: 95%;
-            width: 100%;
-            max-height: 95vh;
-            overflow-y: auto;
-        }
-
-        @media (max-width: 768px) {
-            .game-container {
-                padding: 15px;
-                border-radius: 15px;
-                border-width: 1px;
-            }
-        }
-
-        h1 {
-            color: #ff0040;
-            margin-bottom: 20px;
-            text-shadow: 0 0 10px #ff0040;
-            font-size: 2.5em;
-        }
-
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 1.8em;
-                margin-bottom: 15px;
-            }
-        }
-
-        /* Pantalla de inicio */
-        .start-screen {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .start-btn {
-            background: linear-gradient(45deg, #ff0040, #0040ff);
-            color: white;
-            border: none;
-            padding: 15px 40px;
-            font-size: 1.2em;
-            border-radius: 30px;
-            cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 0 20px rgba(255, 0, 64, 0.5);
-        }
-
-        .start-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 0 30px rgba(255, 0, 64, 0.8);
-        }
-
-        /* Tablero de juego */
-        .game-board {
-            display: none;
-            grid-template-columns: repeat(4, 80px);
-            gap: 10px;
-            margin: 20px auto;
-            justify-content: center;
-        }
-
-        @media (max-width: 480px) {
-            .game-board {
-                grid-template-columns: repeat(4, 60px);
-                gap: 8px;
-            }
-        }
-
-        .card {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, #1a1a2e, #16213e);
-            border: 2px solid #0040ff;
-            border-radius: 10px;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 2em;
-            transition: all 0.3s;
-            position: relative;
-        }
-
-        @media (max-width: 480px) {
-            .card {
-                width: 60px;
-                height: 60px;
-                font-size: 1.5em;
-            }
-        }
-
-        .card:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 15px #0040ff;
-        }
-
-        .card.flipped {
-            background: linear-gradient(135deg, #ff0040, #ff6b6b);
-            border-color: #ff0040;
-        }
-
-        .card.matched {
-            background: linear-gradient(135deg, #00ff00, #40ff40);
-            border-color: #00ff00;
-            animation: matchPulse 0.6s;
-        }
-
-        @keyframes matchPulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.2); }
-            100% { transform: scale(1); }
-        }
-
-        /* Mensajes entre niveles */
-        .message-screen {
-            display: none;
-            flex-direction: column;
-            gap: 20px;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .love-message {
-            font-size: 1.5em;
-            color: #ff6b6b;
-            text-shadow: 0 0 10px #ff0040;
-            animation: fadeIn 2s;
-            line-height: 1.6;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .continue-btn {
-            background: linear-gradient(45deg, #0040ff, #00a0ff);
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            font-size: 1.1em;
-            border-radius: 25px;
-            cursor: pointer;
-            transition: all 0.3s;
-            margin-top: 20px;
-        }
-
-        .continue-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 20px rgba(0, 64, 255, 0.8);
-        }
-
-        /* Mensaje final */
-        .final-message {
-            display: none;
-            text-align: center;
-            max-width: 900px;
-            width: 95%;
-            margin: 0 auto;
-            padding: 20px;
-            overflow-y: auto;
-            max-height: 85vh;
-        }
-
-        .final-text {
-            font-size: 1.8em;
-            color: #ff0040;
-            text-shadow: 0 0 20px #ff0040;
-            line-height: 2.2;
-            text-align: center;
-            padding: 10px;
-        }
-
-        @media (max-width: 768px) {
-            .final-message {
-                padding: 15px;
-                max-height: 80vh;
-            }
-            
-            .final-text {
-                font-size: 1.2em;
-                line-height: 1.8;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .final-text {
-                font-size: 1em;
-                line-height: 1.6;
-            }
-        }
-
-        .word {
-            display: inline-block;
-            opacity: 0;
-            animation: fadeInWord 0.5s forwards;
-            margin: 0 4px;
-        }
-
-        @media (max-width: 480px) {
-            .word {
-                margin: 0 3px;
-            }
-        }
-
-        @keyframes fadeInWord {
-            to { 
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Corazones animados */
-        .floating-hearts {
-            position: fixed;
+        .shooting-star::before {
+            content: '';
+            position: absolute;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 20;
+            width: 100px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, white);
+            transform: translateX(-100px);
         }
 
-        .heart-emoji {
+        @keyframes shoot {
+            from {
+                transform: translateX(0) translateY(0);
+            }
+            to {
+                transform: translateX(300px) translateY(300px);
+            }
+        }
+
+        .constellation {
             position: absolute;
-            font-size: 2em;
-            animation: floatHeart 8s infinite linear, colorChange 3s infinite;
-        }
-
-        @keyframes floatHeart {
-            0% {
-                transform: translateY(100vh) rotate(0deg);
-                opacity: 0;
-            }
-            10% {
-                opacity: 1;
-            }
-            90% {
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(-100px) rotate(360deg);
-                opacity: 0;
-            }
-        }
-
-        @keyframes colorChange {
-            0% { color: #ff0040; filter: drop-shadow(0 0 10px #ff0040); }
-            33% { color: #ffff00; filter: drop-shadow(0 0 10px #ffff00); }
-            66% { color: #ffffff; filter: drop-shadow(0 0 10px #ffffff); }
-            100% { color: #ff0040; filter: drop-shadow(0 0 10px #ff0040); }
-        }
-
-        /* Control de audio */
-        .audio-control {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 100;
-            background: rgba(255, 0, 64, 0.8);
-            border: none;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 1.1em;
-            transition: all 0.3s;
-        }
-
-        .audio-control:hover {
-            background: rgba(255, 0, 64, 1);
-            transform: scale(1.1);
-        }
-
-        /* Corazón de estrellas */
-        .heart-formation {
-            position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             width: 400px;
             height: 400px;
-            display: none;
-            z-index: 5;
+            pointer-events: none;
+            z-index: 10;
         }
 
-        @media (max-width: 768px) {
-            .heart-formation {
-                width: 300px;
-                height: 300px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .heart-formation {
-                width: 200px;
-                height: 200px;
-            }
-        }
-
-        .heart-star {
+        .constellation-star {
             position: absolute;
-            width: 10px;
-            height: 10px;
-            background: #ff0040;
-            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
-            animation: heartGlow 1s infinite alternate;
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.8), 0 0 40px rgba(255, 255, 255, 0.5);
+            animation: pulse 2s ease-in-out infinite;
         }
 
-        @keyframes heartGlow {
-            from { box-shadow: 0 0 10px #ff0040; opacity: 0.8; }
-            to { box-shadow: 0 0 20px #ff0040; opacity: 1; }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.2); opacity: 1; }
         }
 
-        /* Info del nivel */
-        .level-info {
-            color: #00a0ff;
-            font-size: 1.2em;
-            margin: 10px 0;
+        .constellation-line {
+            position: absolute;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            height: 1px;
+            transform-origin: left center;
+            animation: lineGlow 3s ease-in-out infinite;
         }
 
-        .moves {
-            color: #ff6b6b;
-            font-size: 1.1em;
+        @keyframes lineGlow {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 0.6; }
+        }
+
+        .heart {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 20px;
+            height: 20px;
+            animation: heartbeat 1.5s ease-in-out infinite;
+        }
+
+        .heart::before,
+        .heart::after {
+            content: '';
+            position: absolute;
+            width: 13px;
+            height: 20px;
+            background: rgba(255, 0, 110, 0.8);
+            border-radius: 20px 20px 0 0;
+            box-shadow: 0 0 30px rgba(255, 0, 110, 0.5);
+        }
+
+        .heart::before {
+            left: 10px;
+            transform: rotate(-45deg);
+            transform-origin: 0 100%;
+        }
+
+        .heart::after {
+            left: 0;
+            transform: rotate(45deg);
+            transform-origin: 100% 100%;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.1); }
+        }
+
+        .aurora {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at center top, 
+                rgba(120, 119, 198, 0.3) 0%, 
+                rgba(255, 119, 198, 0.2) 30%, 
+                rgba(255, 119, 198, 0.1) 50%, 
+                transparent 70%);
+            animation: auroraMove 10s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes auroraMove {
+            0%, 100% { opacity: 0.3; transform: translateY(0); }
+            50% { opacity: 0.8; transform: translateY(-50px); }
         }
     </style>
 </head>
 <body>
+    <div class="aurora"></div>
     <div id="stars-container"></div>
     
-    <div class="game-container">
-        <!-- Pantalla de inicio -->
-        <div id="start-screen" class="start-screen">
-            <h1>💫 Para Mi Ruby 💫</h1>
-            <h2 style="color: #ff6b6b; margin-bottom: 15px;">Bajo las Estrellas</h2>
-            <p style="font-size: 1.2em; color: #ff6b6b;">Un juego especial para la persona más especial</p>
-            <button class="start-btn" onclick="startGame()">Comenzar Aventura</button>
-        </div>
-
-        <!-- Tablero de juego -->
-        <div id="game-screen" style="display: none;">
-            <h1>💖 Nivel <span id="level">1</span> 💖</h1>
-            <div class="level-info">Encuentra las parejas mágicas</div>
-            <div class="moves">Movimientos: <span id="moves">0</span></div>
-            <div id="game-board" class="game-board"></div>
-        </div>
-
-        <!-- Mensajes entre niveles -->
-        <div id="message-screen" class="message-screen"></div>
-
-        <!-- Mensaje final -->
-        <div id="final-message" class="final-message"></div>
+    <!-- Constelación de pareja -->
+    <div class="constellation">
+        <!-- Persona 1 (izquierda) -->
+        <div class="constellation-star" style="left: 120px; top: 100px;"></div>
+        <div class="constellation-star" style="left: 100px; top: 140px;"></div>
+        <div class="constellation-star" style="left: 110px; top: 180px;"></div>
+        <div class="constellation-star" style="left: 100px; top: 220px;"></div>
+        <div class="constellation-star" style="left: 90px; top: 260px;"></div>
+        <div class="constellation-star" style="left: 110px; top: 260px;"></div>
+        
+        <!-- Persona 2 (derecha) -->
+        <div class="constellation-star" style="left: 280px; top: 100px;"></div>
+        <div class="constellation-star" style="left: 300px; top: 140px;"></div>
+        <div class="constellation-star" style="left: 290px; top: 180px;"></div>
+        <div class="constellation-star" style="left: 300px; top: 220px;"></div>
+        <div class="constellation-star" style="left: 290px; top: 260px;"></div>
+        <div class="constellation-star" style="left: 310px; top: 260px;"></div>
+        
+        <!-- Manos unidas -->
+        <div class="constellation-star" style="left: 180px; top: 180px;"></div>
+        <div class="constellation-star" style="left: 200px; top: 190px;"></div>
+        <div class="constellation-star" style="left: 220px; top: 180px;"></div>
+        
+        <!-- Corazón entre ellos -->
+        <div class="heart" style="left: 200px; top: 150px;"></div>
     </div>
 
-    <!-- Formación de corazón -->
-    <div id="heart-formation" class="heart-formation"></div>
-
     <script>
-        // Variables del juego
-        let currentLevel = 1;
-        let moves = 0;
-        let flippedCards = [];
-        let matchedPairs = 0;
-        let canFlip = true;
+        // Crear estrellas coloridas
+        const colors = ['#ff006e', '#ff4500', '#ffb700', '#00ff88', '#00b4d8', '#b700ff', '#ff00ff'];
+        const animations = ['moveUp', 'moveDown', 'moveLeft', 'moveRight'];
+        const container = document.getElementById('stars-container');
 
-        // Símbolos para las cartas
-        const symbols = ['❤️', '🌟', '🌹', '💎', '🌙', '✨', '💕', '🎁'];
-
-        // Mensajes por nivel (solo 3 niveles)
-        const levelMessages = [
-            "Eres la estrella más brillante en mi universo. Tu luz ilumina cada uno de mis días.",
-            "Tu sonrisa es más hermosa que mil amaneceres, y tu amor más profundo que el océano.",
-            "Cada día a tu lado es una aventura mágica. Eres mi inspiración para ser mejor."
-        ];
-
-        // Crear estrellas de fondo
-        function createStars() {
-            const container = document.getElementById('stars-container');
+        // Crear estrellas estáticas
+        for (let i = 0; i < 200; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.color = colors[Math.floor(Math.random() * colors.length)];
+            star.style.animationDelay = Math.random() * 3 + 's';
+            star.style.animationDuration = (Math.random() * 3 + 2) + 's';
             
-            // Crear diferentes tipos de estrellas
-            for (let i = 0; i < 150; i++) {
-                const star = document.createElement('div');
-                star.className = 'star';
-                
-                // Tamaño aleatorio
-                const size = Math.random() * 6 + 2;
-                star.style.width = size + 'px';
-                star.style.height = size + 'px';
-                
-                // Posición aleatoria
-                star.style.left = Math.random() * 100 + '%';
-                star.style.top = Math.random() * 100 + '%';
-                
-                // Diferentes animaciones para cada estrella
-                const animations = [];
-                
-                // Todas las estrellas titilan
-                animations.push(`twinkle ${Math.random() * 4 + 2}s ${Math.random() * 2}s infinite`);
-                
-                // Algunas estrellas se mueven
-                if (i % 3 === 0) {
-                    animations.push(`moveStar ${Math.random() * 20 + 10}s linear infinite`);
-                    star.style.top = '-100px';
-                }
-                // Algunas flotan en su lugar
-                else if (i % 4 === 0) {
-                    animations.push(`floatStar ${Math.random() * 6 + 4}s ease-in-out infinite`);
-                }
-                // Algunas pulsan
-                else if (i % 5 === 0) {
-                    animations.push(`pulseStar ${Math.random() * 3 + 2}s ease-in-out infinite`);
-                }
-                
-                // Aplicar todas las animaciones
-                star.style.animation = animations.join(', ');
-                
-                // Colores variados para algunas estrellas
-                if (i % 7 === 0) {
-                    star.style.background = '#ffeeaa'; // Amarillo claro
-                } else if (i % 11 === 0) {
-                    star.style.background = '#aaeeff'; // Azul claro
-                } else if (i % 13 === 0) {
-                    star.style.background = '#ffaaee'; // Rosa claro
-                }
-                
-                container.appendChild(star);
+            // Algunas estrellas se moverán
+            if (Math.random() > 0.7) {
+                const animation = animations[Math.floor(Math.random() * animations.length)];
+                star.style.animation += `, ${animation} ${Math.random() * 20 + 10}s linear infinite`;
             }
+            
+            container.appendChild(star);
         }
 
-        // Crear corazones flotantes
-        function createFloatingHearts() {
-            const container = document.getElementById('floating-hearts');
+        // Crear líneas de constelación
+        function createConstellationLines() {
+            const constellation = document.querySelector('.constellation');
+            const stars = constellation.querySelectorAll('.constellation-star');
             
-            setInterval(() => {
-                const heart = document.createElement('div');
-                heart.className = 'heart-emoji';
-                heart.textContent = '❤️';
-                heart.style.left = Math.random() * 100 + '%';
-                heart.style.animationDelay = '0s';
-                heart.style.animationDuration = (Math.random() * 3 + 5) + 's';
-                container.appendChild(heart);
+            // Conexiones para formar las figuras
+            const connections = [
+                // Persona 1
+                [0, 1], [1, 2], [2, 3], [3, 4], [3, 5],
+                // Persona 2
+                [6, 7], [7, 8], [8, 9], [9, 10], [9, 11],
+                // Conexión de manos
+                [2, 12], [12, 13], [13, 14], [14, 8],
+                // Brazos
+                [1, 12], [7, 14]
+            ];
+            
+            connections.forEach(([start, end]) => {
+                const star1 = stars[start];
+                const star2 = stars[end];
                 
-                // Eliminar el corazón después de la animación
-                setTimeout(() => heart.remove(), 8000);
-            }, 2000);
-        }
-
-        // Iniciar juego
-        function startGame() {
-            document.getElementById('start-screen').style.display = 'none';
-            document.getElementById('game-screen').style.display = 'block';
-            initializeLevel();
-        }
-
-        // Inicializar nivel
-        function initializeLevel() {
-            moves = 0;
-            matchedPairs = 0;
-            flippedCards = [];
-            canFlip = true;
-            
-            document.getElementById('level').textContent = currentLevel;
-            document.getElementById('moves').textContent = moves;
-            
-            const board = document.getElementById('game-board');
-            board.innerHTML = '';
-            board.style.display = 'grid';
-            
-            // Crear parejas de cartas
-            const levelSymbols = symbols.slice(0, 4);
-            const cards = [...levelSymbols, ...levelSymbols];
-            
-            // Mezclar cartas (pero no mucho para que sea fácil)
-            cards.sort(() => Math.random() - 0.5);
-            
-            // Crear elementos de carta
-            cards.forEach((symbol, index) => {
-                const card = document.createElement('div');
-                card.className = 'card';
-                card.dataset.symbol = symbol;
-                card.dataset.index = index;
-                card.onclick = () => flipCard(card);
-                board.appendChild(card);
+                const x1 = parseInt(star1.style.left) + 4;
+                const y1 = parseInt(star1.style.top) + 4;
+                const x2 = parseInt(star2.style.left) + 4;
+                const y2 = parseInt(star2.style.top) + 4;
+                
+                const distance = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+                const angle = Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
+                
+                const line = document.createElement('div');
+                line.className = 'constellation-line';
+                line.style.width = distance + 'px';
+                line.style.left = x1 + 'px';
+                line.style.top = y1 + 'px';
+                line.style.transform = `rotate(${angle}deg)`;
+                line.style.animationDelay = Math.random() * 3 + 's';
+                
+                constellation.appendChild(line);
             });
         }
+        
+        // Crear las líneas después de un pequeño retraso
+        setTimeout(createConstellationLines, 100);
 
-        // Voltear carta
-        function flipCard(card) {
-            if (!canFlip || card.classList.contains('flipped') || card.classList.contains('matched')) {
-                return;
-            }
+        // Crear estrellas fugaces
+        function createShootingStar() {
+            const shootingStar = document.createElement('div');
+            shootingStar.className = 'shooting-star';
+            shootingStar.style.left = Math.random() * 50 + '%';
+            shootingStar.style.top = Math.random() * 50 + '%';
+            container.appendChild(shootingStar);
             
-            card.classList.add('flipped');
-            card.textContent = card.dataset.symbol;
-            flippedCards.push(card);
+            setTimeout(() => {
+                shootingStar.remove();
+            }, 3000);
+        }
+
+        // Crear estrellas fugaces periódicamente
+        setInterval(createShootingStar, 2000);
+
+        // Mostrar texto al hacer clic
+        document.body.addEventListener('click', (e) => {
+            const loveText = document.createElement('div');
+            loveText.className = 'love-text';
+            loveText.textContent = 'TE AMO MI RUBY';
+            loveText.style.left = e.clientX - 150 + 'px';
+            loveText.style.top = e.clientY - 30 + 'px';
             
-            if (flippedCards.length === 2) {
-                canFlip = false;
-                moves++;
-                document.getElementById('moves').textContent = moves;
+            document.body.appendChild(loveText);
+            
+            // Crear explosión de estrellas
+            for (let i = 0; i < 20; i++) {
+                const miniStar = document.createElement('div');
+                miniStar.className = 'star';
+                miniStar.style.left = e.clientX + 'px';
+                miniStar.style.top = e.clientY + 'px';
+                miniStar.style.color = colors[Math.floor(Math.random() * colors.length)];
+                miniStar.style.animation = `${animations[Math.floor(Math.random() * animations.length)]} 2s ease-out forwards`;
+                container.appendChild(miniStar);
                 
-                setTimeout(() => checkMatch(), 800);
+                setTimeout(() => miniStar.remove(), 2000);
             }
-        }
-
-        // Verificar coincidencia
-        function checkMatch() {
-            const [card1, card2] = flippedCards;
             
-            if (card1.dataset.symbol === card2.dataset.symbol) {
-                card1.classList.add('matched');
-                card2.classList.add('matched');
-                matchedPairs++;
-                
-                if (matchedPairs === 4) {
-                    setTimeout(() => levelComplete(), 1000);
+            setTimeout(() => {
+                loveText.remove();
+            }, 3000);
+        });
+
+        // Añadir efecto de parallax al mover el mouse
+        document.addEventListener('mousemove', (e) => {
+            const stars = document.querySelectorAll('.star');
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+            
+            stars.forEach((star, index) => {
+                if (index % 3 === 0) {
+                    star.style.transform = `translate(${x * 5}px, ${y * 5}px)`;
                 }
-            } else {
-                // Hacer que "casi" siempre coincidan después de algunos intentos
-                if (moves > 3 && Math.random() > 0.3) {
-                    card2.dataset.symbol = card1.dataset.symbol;
-                    card2.textContent = card1.dataset.symbol;
-                    card1.classList.add('matched');
-                    card2.classList.add('matched');
-                    matchedPairs++;
-                    
-                    if (matchedPairs === 4) {
-                        setTimeout(() => levelComplete(), 1000);
-                    }
-                } else {
-                    card1.classList.remove('flipped');
-                    card2.classList.remove('flipped');
-                    card1.textContent = '';
-                    card2.textContent = '';
-                }
-            }
-            
-            flippedCards = [];
-            canFlip = true;
-        }
-
-        // Nivel completado
-        function levelComplete() {
-            document.getElementById('game-screen').style.display = 'none';
-            
-            if (currentLevel <= 3) {
-                showLevelMessage();
-            } else {
-                showFinalMessage();
-            }
-        }
-
-        // Mostrar mensaje del nivel
-        function showLevelMessage() {
-            const messageScreen = document.getElementById('message-screen');
-            messageScreen.style.display = 'flex';
-            messageScreen.innerHTML = `
-                <h1 style="color: #ff0040; text-shadow: 0 0 20px #ff0040;">¡Nivel ${currentLevel} Completado!</h1>
-                <div class="love-message">${levelMessages[currentLevel - 1]}</div>
-                <button class="continue-btn" onclick="nextLevel()">Continuar 💕</button>
-            `;
-        }
-
-        // Siguiente nivel
-        function nextLevel() {
-            currentLevel++;
-            document.getElementById('message-screen').style.display = 'none';
-            
-            if (currentLevel <= 3) {
-                document.getElementById('game-screen').style.display = 'block';
-                initializeLevel();
-            } else {
-                showFinalMessage();
-            }
-        }
-
-        // Mensaje final
-        function showFinalMessage() {
-            const finalScreen = document.getElementById('final-message');
-            finalScreen.style.display = 'block';
-            
-            const message = "Me encanta todo de ti, así como el cielo estrellado que nos cubre cada noche. Eres la mejor compañera que podría desear, mi amor, mi vida, mi todo. Siempre serás mi reina, la dueña de mi corazón. Te amo infinitamente y más allá de las estrellas. Eres perfecta tal como eres, y cada día me enamoras más. Gracias por existir y por elegirme.";
-            
-            let html = '<div class="final-text">';
-            
-            // Dividir el mensaje en palabras y animar palabra por palabra
-            const words = message.split(' ');
-            
-            words.forEach((word, index) => {
-                html += `<span class="word" style="animation-delay: ${index * 0.1}s">${word}</span>`;
             });
-            
-            html += '</div>';
-            
-            finalScreen.innerHTML = html;
-            
-            // Solo crear corazón de estrellas, sin corazones flotantes
-            setTimeout(() => createHeartFormation(), 3000);
-        }
-
-        // Crear formación de corazón
-        function createHeartFormation() {
-            const heart = document.getElementById('heart-formation');
-            heart.style.display = 'block';
-            
-            // Ajustar escala según el tamaño de pantalla
-            const isMobile = window.innerWidth <= 480;
-            const isTablet = window.innerWidth <= 768;
-            const scale = isMobile ? 0.5 : isTablet ? 0.75 : 1;
-            
-            // Coordenadas para formar un corazón
-            const heartCoords = [];
-            for (let angle = 0; angle < Math.PI * 2; angle += 0.1) {
-                const x = 16 * Math.pow(Math.sin(angle), 3);
-                const y = -(13 * Math.cos(angle) - 5 * Math.cos(2 * angle) - 2 * Math.cos(3 * angle) - Math.cos(4 * angle));
-                heartCoords.push({ 
-                    x: (x * 10 + 200) * scale, 
-                    y: (y * 10 + 150) * scale 
-                });
-            }
-            
-            heartCoords.forEach((coord, index) => {
-                setTimeout(() => {
-                    const star = document.createElement('div');
-                    star.className = 'heart-star';
-                    star.style.left = coord.x + 'px';
-                    star.style.top = coord.y + 'px';
-                    heart.appendChild(star);
-                }, index * 50);
-            });
-        }
-
-        // Inicializar
-        createStars();
+        });
     </script>
 </body>
 </html>
